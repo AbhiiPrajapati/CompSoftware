@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d3026">
+  <title>Tropica Industries | Agro Sales Dashboard</title>
+  <script>try{if(localStorage.getItem('tropica.auth-session')==='1')document.documentElement.classList.add('auth-pending')}catch{}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="authLoading" class="auth-loading" role="status" aria-label="Restoring your session">
+    <span class="auth-loading-spinner" aria-hidden="true"></span>
+  </div>
+  <div id="loginView" class="login-shell">
+    <div class="login-art">
+      <div class="art-top"> <img class="leaf-mark" src="assets/petrol-nozzle.png" alt="">
+<span>TROPICA <b>INDUSTRIES</b></span> </div>
+      <div class="art-copy">
+        <span class="eyebrow light">GROW TOGETHER</span>
+        <h1>Growing better.<br><em>Selling smarter.</em></h1>
+        <p>One connected view of performance, progress and possibilities.</p>
+      </div>
+      <div class="art-foot"><span>AGRO SALES • PERFORMANCE • GROWTH</span><span>EST. 2012</span></div>
+    </div>
+    <div class="login-panel">
+      <img src="assets/tropica-logo.png" class="login-logo" alt="Tropica Industries">
+      <div class="login-card">
+        <span class="eyebrow">WELCOME BACK</span>
+        <h2>Sign in to your workspace</h2>
+        <p class="muted">Sign in with your employee credentials or choose admin access below.</p>
+        <form id="loginForm">
+          <label for="loginEmail">Account email</label>
+          <input id="loginEmail" type="email" placeholder="your.name@tropica.com" autocomplete="username" required>
+          <label for="loginPassword">Password</label>
+          <div class="password-wrap"><input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" required><button type="button" class="show-pass" id="togglePassword">Show</button></div>
+          <button class="btn btn-primary full" id="employeeLoginSubmit" type="submit">Login as employee <span>→</span></button>
+        </form>
+        <div class="login-or"><span></span>OR<span></span></div>
+        <button class="btn btn-outline full" id="adminDemo" type="button">Login as admin <span>→</span></button>
+        <div class="demo-note" id="loginMessage" role="status" aria-live="polite" aria-busy="false">Use the account and password assigned to you.</div>
+      </div>
+      <p class="login-legal">© 2026 Tropica Industries. Internal business workspace.</p>
+    </div>
+  </div>
+
+  <div id="appView" class="app-shell hidden">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><img src="assets/tropica-logo.png" alt="Tropica"><span class="brand-caption">AGRO SALES PORTAL</span></div>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav id="adminNav" class="nav-list">
+        <button class="nav-item active" data-page="overview"><span class="nav-icon">◫</span>Overview</button>
+        <button class="nav-item" data-page="entry"><span class="nav-icon">＋</span>Daily Entry</button>
+        <button class="nav-item" data-page="reports"><span class="nav-icon">▤</span>Reports</button>
+        <button class="nav-item" data-page="team"><span class="nav-icon">♙</span>Sales team</button>
+      </nav>
+      <nav id="employeeNav" class="nav-list hidden">
+        <button class="nav-item active" data-page="employee"><span class="nav-icon">◫</span>My Dashboard</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <button class="nav-item logout" id="logoutBtn"><span class="nav-icon">↪</span>Logout</button>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu">☰</button>
+        <div><div class="crumb">TROPICA / <b id="crumbCurrent">OVERVIEW</b></div><div class="page-heading" id="pageHeading">Tropica Command Center</div></div>
+        <div class="top-actions">
+          <div class="admin-credit">Designed by <a href="https://www.ansoim.com/" target="_blank" rel="noopener noreferrer">ansoim</a></div>
+          <button class="user-menu" id="adminProfileOpen" type="button" aria-label="Edit administrator profile"><span class="avatar" id="userAvatar">J</span><span class="user-meta"><b id="userName">Jaykishan Tolani</b><small id="userRole">Administrator</small></span><span class="chevron">⌄</span></button>
+        </div>
+      </header>
+
+      <section id="overviewPage" class="page active">
+        <div class="welcome-row"><div><span class="eyebrow">BUSINESS SNAPSHOT</span><h1>Good morning, <span id="welcomeName">Jaykishan</span> <span class="wave">✳</span></h1><p class="muted">Here’s what’s happening across your sales team.</p></div><div class="period-control"><span>Reporting period</span><select id="overviewMonth" aria-label="Reporting month"></select><select id="overviewYear" aria-label="Reporting year"></select></div></div>
+        <div class="stat-grid">
+          <article class="stat-card"><div class="stat-top"><span>Total sales</span><span class="stat-icon green">₣</span></div><div class="stat-value" id="totalSales">—</div><div class="stat-foot"><span class="positive" id="totalSalesPeriodLabel">Selected month</span><span>snapshot + published sales</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>Team target</span><span class="stat-icon blue">◎</span></div><div class="stat-value" id="teamTarget">—</div><div class="stat-foot"><span class="neutral" id="targetProgress">—</span><span>monthly goal</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>Active salespeople</span><span class="stat-icon amber">♙</span></div><div class="stat-value" id="activePeople">12</div><div class="stat-foot"><span class="positive">+2</span><span>this quarter</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>Average sales / day</span><span class="stat-icon purple">↗</span></div><div class="stat-value" id="averageSale">—</div><div class="stat-foot"><span class="positive">Selected period</span><span>per calendar day</span></div></article>
+        </div>
+
+        <div class="content-grid">
+          <article class="panel chart-panel">
+            <div class="panel-head"><div><h3>Sales performance</h3><p id="chartSubtitle">Historical monthly sales pattern</p></div><div class="chart-controls"><button class="btn btn-outline btn-small" id="analyzeBtn" type="button" aria-pressed="false">Analyse</button><select id="chartYear" aria-label="Sales chart year"></select></div></div>
+            <div class="chart-legend" id="chartLegend"></div>
+            <div class="chart-insight" id="chartInsight"></div>
+            <div class="chart-wrap"><div class="y-labels" id="chartYLabels"></div><div class="chart-main"><div class="grid-lines"><i></i><i></i><i></i><i></i><i></i><i></i></div><svg id="salesChart" viewBox="0 0 700 230" preserveAspectRatio="none" aria-label="Monthly sales comparison chart"><defs><linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#2e9d68" stop-opacity=".22"/><stop offset="100%" stop-color="#2e9d68" stop-opacity="0"/></linearGradient></defs><path id="areaPath" d="" fill="url(#areaFill)"/><path id="comparisonPath" d="" fill="none" stroke="#5989cb" stroke-width="3" stroke-dasharray="7 5" stroke-linecap="round" stroke-linejoin="round"/><path id="actualPath" d="" fill="none" stroke="#218653" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><g id="comparisonPoints"></g><g id="chartPoints"></g></svg><div class="chart-tooltip" id="chartTooltip" role="status" aria-live="polite"></div><div class="x-labels"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span></div></div></div>
+          </article>
+          <article class="panel target-panel"><div class="panel-head"><div><h3>Team target progress</h3><p id="overviewTargetMonth">November 2026</p></div><span class="more">•••</span></div><div class="target-ring"><div class="ring" id="teamRing"><div><strong id="ringPercent">0%</strong><small>achieved</small></div></div></div><div class="target-numbers"><div><small>Achieved sales</small><b id="ringAchieved">—</b></div><div><small>Remaining</small><b id="ringRemaining">—</b></div></div><div class="progress-track"><span id="teamProgressBar" style="width:0%"></span></div><div class="target-caption"><span>0 FCFA</span><b id="targetCaption">— target</b></div></article>
+        </div>
+        <div class="content-grid lower-grid">
+          <article class="panel performers-panel"><div class="panel-head"><div><h3>Top performers</h3><p>Leading sales contributors this month</p></div><button class="text-btn" id="viewEmployeeBoard">View leaderboard →</button></div><div class="performer-list" id="performerList"></div></article>
+          <article class="panel activity-panel"><div class="panel-head"><div><h3>Recent sales activity</h3><p>Latest published entries</p></div><span class="live-text">● LIVE</span></div><div id="activityList" class="activity-list"></div></article>
+        </div>
+      </section>
+
+      <section id="entryPage" class="page">
+        <div class="page-intro"><div><span class="eyebrow">ADMIN WORKSPACE</span><h1>Daily sales entry</h1><p class="muted">Record sales, manage monthly targets and publish updates to the team.</p><p class="micro-note">November totals include the supplied month-to-date snapshot. Avoid entering transactions already included in that snapshot.</p></div><div class="draft-status"><i></i> Changes sync to Firebase</div></div>
+        <div class="entry-layout">
+          <div class="entry-main">
+            <article class="panel"><div class="panel-head"><div><h3>Sales entry form</h3><p>Add one or more product sales for a salesperson</p></div><span class="step-tag">01 / ENTRY</span></div>
+              <form id="salesForm">
+                <div class="form-grid three">
+                  <div class="field"><label for="saleDate">Entry date</label><input type="date" id="saleDate" required></div>
+                  <div class="field"><label for="salesperson">Salesperson</label><select id="salesperson" required></select></div>
+                  <div class="field"><label for="saleReference">Reference (optional)</label><input id="saleReference" placeholder="Invoice / order no."></div>
+                </div>
+                <div class="form-divider"></div>
+                <div class="entry-lines-head"><div><b>Product details</b><small>Enter quantity and sales value for each product</small></div><button type="button" class="btn btn-soft btn-small" id="addRow">＋ Add product</button></div>
+                <div class="sales-table-wrap"><table class="sales-table"><thead><tr><th>Product</th><th>Category</th><th>Quantity</th><th>Sales value (FCFA)</th><th></th></tr></thead><tbody id="salesRows"></tbody></table></div>
+                <div class="entry-total"><span>Entry total</span><strong id="entryTotal">0 FCFA</strong></div>
+                <div class="form-actions"><button class="btn btn-outline" type="reset" id="clearEntry">Clear form</button><button class="btn btn-primary" type="submit">Save sales entry <span>→</span></button></div>
+              </form>
+            </article>
+            <article class="panel recent-entry-panel"><div class="panel-head"><div><h3>Sales history</h3><p>Search and edit entries from any date</p></div><span class="count-badge" id="entryCount">0 entries</span></div><div class="history-filters"><input id="entrySearch" type="search" placeholder="Search salesperson, product or reference"><input id="entryDateFilter" type="month" aria-label="Filter sales by month"></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Date</th><th>Salesperson</th><th>Product</th><th>Sales value</th><th>Status</th><th>Actions</th></tr></thead><tbody id="recentEntries"></tbody></table></div></article>
+          </div>
+          <aside class="entry-side">
+            <article class="panel target-edit"><div class="panel-head"><div><h3>Monthly team target</h3><p>Set the goal for all salespeople</p></div><span class="stat-icon green">◎</span></div><div class="field"><label for="targetMonth">Target month</label><select id="targetMonth"></select></div><div class="field"><label for="targetAmount">Team target (FCFA)</label><input id="targetAmount" type="number" min="0" step="1000" value="70000000"></div><div class="target-preview"><small>Current target</small><strong id="targetPreview">70,000,000 FCFA</strong></div><button class="btn btn-primary full" id="saveTarget">Update team target</button><p class="micro-note">The updated target will reflect on employee dashboards after publishing.</p></article>
+            <article class="publish-card"><div class="publish-symbol">↗</div><h3>Ready to go live?</h3><p>Publish saved sales entries and target updates to the employee dashboard.</p><div class="publish-meta"><span>Unpublished changes</span><b id="unpublishedCount">0</b></div><button class="btn btn-light full" id="publishBtn">Publish to dashboard <span>→</span></button><div class="publish-foot" id="publishStatus">Last published: Demo data</div></article>
+          </aside>
+        </div>
+      </section>
+
+      <section id="teamPage" class="page">
+        <div class="page-intro"><div><span class="eyebrow">ADMIN WORKSPACE</span><h1>Sales team</h1><p class="muted">Add salespeople or remove them from future entry lists. Existing sales history is retained.</p></div></div>
+        <article class="panel team-panel"><div class="panel-head"><div><h3>Add a salesperson</h3><p>Name and region are enough to get started.</p></div></div><form id="addPersonForm" class="team-add-form"><div class="field"><label for="newPersonName">Name</label><input id="newPersonName" required placeholder="Salesperson name"></div><div class="field"><label for="newPersonRegion">Region (optional)</label><input id="newPersonRegion" placeholder="Region"></div><button class="btn btn-primary" type="submit">Add salesperson <span>→</span></button></form><div class="table-scroll"><table class="data-table"><thead><tr><th>Salesperson</th><th>Region</th><th>November sales snapshot</th><th>Status</th><th>Actions</th></tr></thead><tbody id="teamRows"></tbody></table></div></article>
+      </section>
+
+      <section id="reportsPage" class="page">
+        <div class="page-intro"><div><span class="eyebrow">PERFORMANCE INTELLIGENCE</span><h1>Reports & downloads</h1><p class="muted">Review monthly performance and export the data you need.</p></div><div class="period-control"><span>Report year</span><select id="reportYear"></select></div></div>
+        <div class="report-kpis stat-grid">
+          <article class="stat-card"><div class="stat-top"><span>Sales this year</span><span class="stat-icon green">₣</span></div><div class="stat-value" id="salesThisYear">—</div><div class="stat-foot"><span class="positive">Published records</span><span>year to date</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>Target achievement</span><span class="stat-icon blue">◎</span></div><div class="stat-value" id="annualTargetProgress">—</div><div class="stat-foot"><span class="neutral">Current month target</span><span>selected report year</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>Best month</span><span class="stat-icon amber">☆</span></div><div class="stat-value" id="bestMonth">—</div><div class="stat-foot"><span class="positive" id="bestMonthSales">—</span><span>recorded sales</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>Reports available</span><span class="stat-icon purple">▤</span></div><div class="stat-value" id="reportCount">11</div><div class="stat-foot"><span class="neutral">Jan – Nov 2026</span><span>monthly reports</span></div></article>
+        </div>
+        <article class="panel report-panel"><div class="panel-head"><div><h3>Monthly sales reports</h3><p>Download team summaries and individual contribution details</p></div><div class="report-filter"><select id="reportMonth"></select><button class="btn btn-outline btn-small" id="downloadAll">↓ Export selected XLSX</button><button class="btn btn-outline btn-small" id="downloadDataBackup">↓ Data JSON backup</button><button class="btn btn-outline btn-small" id="importDataBtn">Import JSON to Firebase</button><input type="file" id="importDataFile" accept="application/json,.json" hidden></div></div>
+          <div class="report-table-wrap"><table class="data-table report-table"><thead><tr><th>Reporting month</th><th>Total sales</th><th>Team target</th><th>Achievement</th><th>Employees</th><th>Available reports</th><th></th></tr></thead><tbody id="reportRows"></tbody></table></div>
+        </article>
+        <div class="report-note"><span class="note-icon">i</span><div><b>About these reports</b><p>Reports use published sales entries. XLSX workbooks include transaction and summary sheets.</p></div></div>
+      </section>
+
+      <section id="employeePage" class="page employee-command-page">
+        <div class="employee-command-header"><div class="employee-brand"><img src="assets/tropica-logo.png" alt="Tropica Industries"><span class="employee-brand-divider"></span><div><small>PERFORMANCE HUB</small><b>Sales command centre</b></div></div><div class="employee-credit">Designed by <a href="https://www.ansoim.com/" target="_blank" rel="noopener noreferrer">ansoim</a></div></div>
+        <div class="employee-command-heading">
+          <div><div class="employee-eyebrow">TROPICA INDUSTRIES / SALES PERFORMANCE</div><h1>Agro Sales Command Center</h1><p>Team leaderboard · <span id="employeeDateRange"></span> · Abidjan, Côte d’Ivoire</p></div>
+        </div>
+        <div class="employee-command-top">
+          <section class="employee-glass-panel podium-panel"><div class="employee-panel-head"><h2>The top performers</h2><span>Ranked by sales value</span></div><div class="employee-podium" id="employeePodium"></div></section>
+          <section class="employee-glass-panel target-command-panel"><div class="employee-panel-head"><h2>One team. One target.</h2><span>Target progress</span></div><div class="employee-target-content">
+            <div class="employee-gauge"><svg viewBox="0 0 240 150"><defs><linearGradient id="employeeTargetGradient"><stop stop-color="#77c987"/><stop offset="55%" stop-color="#b8e989"/><stop offset="100%" stop-color="#fff0a6"/></linearGradient></defs><path d="M25 125 A95 95 0 0 1 215 125" fill="none" stroke="#ffffff20" stroke-width="13" stroke-linecap="round"/><path id="employeeTargetGauge" d="M25 125 A95 95 0 0 1 215 125" fill="none" stroke="url(#employeeTargetGradient)" stroke-width="13" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100"/></svg><div class="employee-gauge-text"><strong id="employeeTeamPercent">0.0</strong><b>%</b><span>of target achieved</span></div></div>
+            <div class="employee-target-label">Team sales target</div><div class="employee-target-total"><strong id="employeeTeamTarget">0</strong> <small>FCFA</small></div><div class="employee-target-quote" id="employeeTargetQuote">Let’s get moving!</div><div class="employee-target-achieved" id="employeeTeamAchieved">Sales achieved: —</div><div class="employee-target-bottom"><div>Still to achieve<strong id="employeeTargetRemaining">— FCFA</strong></div><div>Share of target left<strong id="employeeTargetLeftPercent">—%</strong></div></div>
+          </div></section>
+        </div>
+        <div class="employee-command-bottom">
+          <section class="employee-glass-panel employee-leaderboard-panel"><div class="employee-panel-head"><h2>Sales leaderboard</h2><label class="employee-sort">Rank by <select id="employeeSort"><option value="sales">Sales value</option><option value="closed">Sales closed</option><option value="entries">Total entries</option></select></label></div><div class="employee-leader-scroll"><table class="employee-leader-table"><thead><tr><th>Rank</th><th>Salesperson</th><th>Entries</th><th>Closed</th><th>Sales value · FCFA</th></tr></thead><tbody id="employeeLeaderboardRows"></tbody></table></div></section>
+          
+        </div>
+        <div class="employee-command-footer"><span id="employeeSnapshotNote">November 2026 figures are the supplied month-to-date snapshot. New entries add to this snapshot.</span><span>All amounts in West African CFA francs (XOF / FCFA)</span></div>
+      </section>
+      <footer class="app-footer"><span>© 2026 Tropica Industries</span><span>AGRO SALES PORTAL <i>•</i> DEMO ENVIRONMENT</span></footer>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <dialog id="adminProfileDialog" class="profile-dialog"><form id="adminProfileForm"><button class="dialog-close" type="button" id="adminProfileClose" aria-label="Close">×</button><span class="eyebrow">ADMIN PROFILE</span><h2>Administrator details</h2><label for="adminProfileName">Display name</label><input id="adminProfileName" required><label for="adminProfilePhoto">Profile photo</label><input id="adminProfilePhoto" type="file" accept="image/*"><img id="adminPhotoPreview" alt="Profile photo preview" class="admin-photo-preview hidden"><div class="profile-actions"><button class="btn btn-outline" type="button" id="removeAdminPhoto">Remove photo</button><button class="btn btn-primary" type="submit">Save profile</button></div></form></dialog>
+  <script type="module" src="firebase-client.js"></script>
+  <script src="app.js"></script>
+  <script type="module" src="assets/employee-trophies.js"></script>
+</body>
+</html>
