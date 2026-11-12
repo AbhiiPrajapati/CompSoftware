@@ -1,142 +1,138 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-import { browserLocalPersistence, getAuth, onAuthStateChanged, setPersistence, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
-import { getFirestore, collection, doc, getDoc, onSnapshot, setDoc, writeBatch } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
-import { firebaseConfig } from "./firebase-config.js";
+// Local-only authentication and storage adapter.
+// This project no longer connects to Firebase. Data is saved in this browser's
+// localStorage and is not shared across browsers or devices.
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const persistenceReady = setPersistence(auth, browserLocalPersistence).then(() => null, error => error);
+const DATA_KEY = "tropica.local-data.v1";
+const SESSION_KEY = "tropica.local-admin-session";
+const ADMIN_EMAIL = "admin@tropica";
+const ADMIN_PASSWORD = "12345";
+const ADMIN_UID = "local-admin";
+
+function emptyState() {
+  return {
+    people: [],
+    entries: [],
+    salesSnapshots: [],
+    teamTarget: 0,
+    teamTargets: {},
+    annualSalesData: null
+  };
+}
+
+function readState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(DATA_KEY) || "null");
+    if (!saved || typeof saved !== "object") return emptyState();
+    const defaults = emptyState();
+    return {
+      ...defaults,
+      ...saved,
+      people: Array.isArray(saved.people) ? saved.people : [],
+      entries: Array.isArray(saved.entries) ? saved.entries : [],
+      salesSnapshots: Array.isArray(saved.salesSnapshots) ? saved.salesSnapshots : [],
+      teamTargets: saved.teamTargets && typeof saved.teamTargets === "object" ? saved.teamTargets : {}
+    };
+  } catch (error) {
+    console.warn("Could not read Tropica data from this browser.", error);
+    return emptyState();
+  }
+}
+
+function writeState(state) {
+  try {
+    localStorage.setItem(DATA_KEY, JSON.stringify(state));
+  } catch (error) {
+    throw new Error("Could not save data in this browser. Check available storage space and browser privacy settings.", { cause: error });
+  }
+}
+
+function makeAdminUser() {
+  return {
+    uid: ADMIN_UID,
+    email: ADMIN_EMAIL,
+    getIdTokenResult: async () => ({ authTime: new Date().toISOString() })
+  };
+}
+
+let currentUser = null;
+let adminProfile = { role: "admin", active: true, displayName: "Jaykishan Tolani", photo: "" };
+const authListeners = new Set();
+const stateListeners = new Set();
+
+function notifyAuth() {
+  for (const listener of authListeners) queueMicrotask(() => listener(currentUser));
+}
+
+const auth = {};
+Object.defineProperty(auth, "currentUser", { get: () => currentUser });
+
+async function signIn(email, password) {
+  if (String(email).trim().toLowerCase() !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+    throw Object.assign(new Error("The email or password is incorrect."), { code: "auth/invalid-credential" });
+  }
+  currentUser = makeAdminUser();
+  try { localStorage.setItem(SESSION_KEY, "1"); } catch (error) { console.warn("Could not remember this sign-in.", error); }
+  notifyAuth();
+  return { user: currentUser };
+}
+
+async function signOut() {
+  currentUser = null;
+  try { localStorage.removeItem(SESSION_KEY); } catch (error) { console.warn("Could not clear the local sign-in.", error); }
+  notifyAuth();
+}
+
+function onAuthStateChanged(callback, onError = console.error) {
+  authListeners.add(callback);
+  queueMicrotask(() => {
+    try { callback(currentUser); } catch (error) { onError(error); }
+  });
+  return () => authListeners.delete(callback);
+}
 
 async function loadProfile(uid) {
-  const snapshot = await getDoc(doc(db, "users", uid));
-  return snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } : null;
+  return uid === ADMIN_UID ? { ...adminProfile } : null;
 }
 
-function buildState(collections) {
-  const { salespeople, salesEntries, salesSnapshots, monthlyTargets, annualReports } = collections;
-  const byId = new Map(salespeople.map(person => [person.id, person]));
-  const months = [...new Set(annualReports.map(row => String(row.month).slice(-2)))].sort();
-  const annualSalesData = months.length ? {
-    currency: "INR", months: months.map(month => {
-      const row = annualReports.find(item => String(item.month).slice(-2) === month) || {};
-      return { month, agro: row.agro || {}, chemical: row.chemical || {}, oil: row.oil || {}, total: row.total || {} };
-    }),
-    totals: { total: Object.fromEntries([2025, 2026].map(year => [String(year), annualReports.reduce((sum, row) => sum + (Number(row.total?.[year]) || 0), 0)])) }
-  } : null;
-  return {
-    people: salespeople.map(person => ({ ...person, sales: 0, target: Number(person.target) || 0 })),
-    entries: salesEntries.map(entry => ({ ...entry, person: entry.person || byId.get(entry.salespersonId)?.name || "", qty: entry.quantity ?? entry.qty, published: entry.published ?? entry.status === "published" })),
-    salesSnapshots: salesSnapshots.map(row => ({ ...row, salespersonName: row.salespersonName || byId.get(row.salespersonId)?.name || row.salespersonId, amount: Number(row.amount) || 0 })),
-    teamTargets: Object.fromEntries(monthlyTargets.map(row => [row.month || row.id, Number(row.teamTarget) || 0]).filter(([month]) => /^\d{4}-\d{2}$/.test(month))),
-    teamTarget: Number(monthlyTargets.find(row => row.month === "2026-11")?.teamTarget) || 0,
-    annualSalesData
+function subscribeState(onUpdate, onError = console.error) {
+  let active = true;
+  const listener = () => {
+    if (!active) return;
+    try { onUpdate(readState()); } catch (error) { onError(error); }
   };
-}
-
-function subscribeState(onUpdate, onError) {
-  const names = ["salespeople", "salesEntries", "salesSnapshots", "monthlyTargets", "annualReports"];
-  const collections = {};
-  const readyNames = new Set();
-  let resolveReady, rejectReady, readySettled = false, cancelled = false;
-  const ready = new Promise((resolve, reject) => {
-    resolveReady = resolve;
-    rejectReady = reject;
-  });
-  const unsubscribe = names.map(name => onSnapshot(collection(db, name), snapshot => {
-    if (cancelled) return;
-    collections[name] = snapshot.docs.map(item => ({ id: item.id, ...item.data() }));
-    readyNames.add(name);
-    if (readyNames.size !== names.length) return;
-    const state = buildState(collections);
-    if (!readySettled) {
-      readySettled = true;
-      resolveReady(state);
-    }
-    try {
-      onUpdate(state);
-    } catch (error) {
-      onError(error);
-    }
-  }, error => {
-    if (!readySettled) {
-      readySettled = true;
-      rejectReady(error);
-    }
-    onError(error);
-  }));
+  stateListeners.add(listener);
+  const state = readState();
+  queueMicrotask(listener);
   return {
-    ready,
+    ready: Promise.resolve(state),
     unsubscribe() {
-      cancelled = true;
-      unsubscribe.forEach(stop => stop());
+      active = false;
+      stateListeners.delete(listener);
     }
   };
 }
 
-function stateCollections(state) {
-  const snapshots = state.salesSnapshots.map(row => ({ ...row, id: `${row.month}_${row.salespersonId}` }));
-  const targetMap = state.teamTargets || { "2026-11": state.teamTarget };
-  const targets = Object.entries(targetMap).map(([month, teamTarget]) => ({ id: month, month, teamTarget: Number(teamTarget) || 0 }));
-  const annualReports = (state.annualSalesData?.months || []).map((row, index) => ({
-    id: String(row.month || String(index + 1).padStart(2, "0")).slice(-2),
-    month: String(row.month || String(index + 1).padStart(2, "0")).slice(-2),
-    agro: row.agro || {},
-    chemical: row.chemical || {},
-    oil: row.oil || {},
-    total: row.total || {}
-  }));
-  return {
-    salespeople: state.people,
-    salesEntries: state.entries,
-    salesSnapshots: snapshots,
-    monthlyTargets: targets,
-    annualReports
-  };
-}
-
-function stableStringify(value) {
-  if (Array.isArray(value)) return `[${value.map(stableStringify).join(",")}]`;
-  if (value && typeof value === "object") {
-    return `{${Object.keys(value).sort().map(key => `${JSON.stringify(key)}:${stableStringify(value[key])}`).join(",")}}`;
-  }
-  return JSON.stringify(value);
-}
-
-async function saveState(state, previousState) {
-  if (!auth.currentUser) throw new Error("Sign in before saving business records.");
-  const profile = await loadProfile(auth.currentUser.uid);
-  if (profile?.role !== "admin" || profile.active !== true) throw new Error("Only an active administrator can change business records.");
-
-  const next = stateCollections(state);
-  const previous = previousState ? stateCollections(previousState) : Object.fromEntries(Object.keys(next).map(name => [name, []]));
-  const operations = [];
-  for (const [name, records] of Object.entries(next)) {
-    const before = new Map((previous[name] || []).map(record => [String(record.id), record]));
-    const after = new Map(records.map(record => [String(record.id), record]));
-    for (const [id, record] of after) {
-      if (stableStringify(before.get(id)) !== stableStringify(record)) {
-        operations.push({ type: "set", ref: doc(db, name, id), data: record });
-      }
-    }
-    for (const id of before.keys()) {
-      if (!after.has(id)) operations.push({ type: "delete", ref: doc(db, name, id) });
-    }
-  }
-  for (let i = 0; i < operations.length; i += 450) {
-    const batch = writeBatch(db);
-    operations.slice(i, i + 450).forEach(op => op.type === "delete" ? batch.delete(op.ref) : batch.set(op.ref, op.data));
-    await batch.commit();
-  }
+async function saveState(state) {
+  if (currentUser?.uid !== ADMIN_UID) throw new Error("Sign in as the administrator before saving data.");
+  writeState(state);
+  for (const listener of stateListeners) listener();
 }
 
 async function saveAdminProfile(profile) {
-  if (!auth.currentUser) throw new Error("Sign in before updating the administrator profile.");
-  await setDoc(doc(db, "users", auth.currentUser.uid), { displayName: profile.name, photo: profile.photo || "", updatedAt: new Date().toISOString() }, { merge: true });
+  if (currentUser?.uid !== ADMIN_UID) throw new Error("Sign in as the administrator before updating the profile.");
+  adminProfile = { ...adminProfile, displayName: profile.name, photo: profile.photo || "" };
 }
 
+if (localStorage.getItem(SESSION_KEY) === "1") currentUser = makeAdminUser();
+
 window.tropicaFirebase = {
-  auth, db, signIn: (email, password) => signInWithEmailAndPassword(auth, email, password),
-  ready: persistenceReady, signOut: () => signOut(auth), onAuthStateChanged: (callback, onError) => onAuthStateChanged(auth, callback, onError),
-  loadProfile, subscribeState, saveState, saveAdminProfile
+  auth,
+  ready: Promise.resolve(null),
+  signIn,
+  signOut,
+  onAuthStateChanged,
+  loadProfile,
+  subscribeState,
+  saveState,
+  saveAdminProfile
 };
