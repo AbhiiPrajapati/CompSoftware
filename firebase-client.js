@@ -4,12 +4,58 @@
 
 const DATA_KEY = "tropica.local-data.v1";
 const SESSION_KEY = "tropica.local-admin-session";
-const ADMIN_EMAIL = "abhishek@apple";
+const ADMIN_EMAIL = "abhishek@apple.com";
 const ADMIN_PASSWORD = "12345";
 const ADMIN_UID = "local-admin";
 
+// Clearly labeled demo data for previewing the dashboard's analysis UI.
+// Sales totals are arbitrary sample values, not real company records.
+const DEMO_STATE = {
+  people: [
+    { id: "demo-1", name: "Alex Morgan", region: "Sydney", active: true, sales: 0, target: 0 },
+    { id: "demo-2", name: "Taylor Reed", region: "Melbourne", active: true, sales: 0, target: 0 },
+    { id: "demo-3", name: "Jordan Lee", region: "Brisbane", active: true, sales: 0, target: 0 },
+    { id: "demo-4", name: "Casey Patel", region: "Perth", active: true, sales: 0, target: 0 },
+    { id: "demo-5", name: "Riley Kim", region: "Adelaide", active: true, sales: 0, target: 0 },
+    { id: "demo-6", name: "Morgan Blake", region: "Canberra", active: true, sales: 0, target: 0 },
+    { id: "demo-7", name: "Jamie Chen", region: "Hobart", active: true, sales: 0, target: 0 },
+    { id: "demo-8", name: "Drew Wilson", region: "Darwin", active: true, sales: 0, target: 0 }
+  ],
+  entries: [],
+  salesSnapshots: [
+    { id: "2026-11_demo-1", month: "2026-11", salespersonId: "demo-1", salespersonName: "Alex Morgan", amount: 7000000 },
+    { id: "2026-11_demo-2", month: "2026-11", salespersonId: "demo-2", salespersonName: "Taylor Reed", amount: 6000000 },
+    { id: "2026-11_demo-3", month: "2026-11", salespersonId: "demo-3", salespersonName: "Jordan Lee", amount: 5500000 },
+    { id: "2026-11_demo-4", month: "2026-11", salespersonId: "demo-4", salespersonName: "Casey Patel", amount: 5000000 },
+    { id: "2026-11_demo-5", month: "2026-11", salespersonId: "demo-5", salespersonName: "Riley Kim", amount: 4800000 },
+    { id: "2026-11_demo-6", month: "2026-11", salespersonId: "demo-6", salespersonName: "Morgan Blake", amount: 4500000 },
+    { id: "2026-11_demo-7", month: "2026-11", salespersonId: "demo-7", salespersonName: "Jamie Chen", amount: 4000000 },
+    { id: "2026-11_demo-8", month: "2026-11", salespersonId: "demo-8", salespersonName: "Drew Wilson", amount: 3520000 }
+  ],
+  teamTarget: 245000000,
+  teamTargets: { "2026-11": 245000000 },
+  annualSalesData: {
+    currency: "FCFA",
+    years: [2025, 2026],
+    months: [
+      { month: "01", total: { "2025": 3500000, "2026": 4500000 } },
+      { month: "02", total: { "2025": 8500000, "2026": 10000000 } },
+      { month: "03", total: { "2025": 7500000, "2026": 9000000 } },
+      { month: "04", total: { "2025": 10000000, "2026": 12000000 } },
+      { month: "05", total: { "2025": 11000000, "2026": 14500000 } },
+      { month: "06", total: { "2025": 15000000, "2026": 18500000 } },
+      { month: "07", total: { "2025": 9000000, "2026": 15500000 } },
+      { month: "08", total: { "2025": 10000000, "2026": 13500000 } },
+      { month: "09", total: { "2025": 15000000, "2026": 22000000 } },
+      { month: "10", total: { "2025": 18000000, "2026": 25000000 } },
+      { month: "11", total: { "2025": 24000000, "2026": 40320000 } },
+      { month: "12", total: { "2025": null, "2026": null } }
+    ]
+  }
+};
+
 function emptyState() {
-  return { people: [], entries: [], salesSnapshots: [], teamTarget: 0, teamTargets: {}, annualSalesData: null };
+  return JSON.parse(JSON.stringify(DEMO_STATE));
 }
 function readState() {
   try {
