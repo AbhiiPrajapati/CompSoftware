@@ -79,19 +79,55 @@ async function saveAdminProfile(profile) {
   adminProfile = { ...adminProfile, displayName: profile.name, photo: profile.photo || "" };
 }
 
-// Brand visible and dynamically generated page content consistently.
 function rebrandText(value) {
   return value.replace(/Tropica\s+Industries/gi, "Apple Inc.")
     .replace(/Tropica/gi, "Apple Inc.")
     .replace(/FCFA/g, "AUD")
     .replace(/₣/g, "A$");
 }
+function makeAppleLogo() {
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", "0 0 64 64");
+  svg.setAttribute("aria-hidden", "true");
+  svg.setAttribute("class", "apple-login-mark");
+  svg.style.cssText = "width:38px;height:38px;flex:none;filter:drop-shadow(0 1px 2px #001c16)";
+  const body = document.createElementNS(ns, "path");
+  body.setAttribute("fill", "#f4f4f2");
+  body.setAttribute("stroke", "#b8c2be");
+  body.setAttribute("stroke-width", "1.5");
+  body.setAttribute("d", "M32 22c-6-6-17-7-23 1-8 11 1 32 10 37 5 3 9-1 13-1s8 4 13 1c9-5 18-26 10-37-6-8-17-7-23-1z");
+  const leaf = document.createElementNS(ns, "path");
+  leaf.setAttribute("fill", "#f4f4f2");
+  leaf.setAttribute("stroke", "#b8c2be");
+  leaf.setAttribute("stroke-width", "1.5");
+  leaf.setAttribute("d", "M33 16C33 7 40 3 49 4c-1 8-7 13-16 13z");
+  svg.append(body, leaf);
+  return svg;
+}
+function makeLoginBrand() {
+  const brand = document.createElement("div");
+  brand.className = "apple-login-brand";
+  brand.setAttribute("role", "img");
+  brand.setAttribute("aria-label", "Apple Inc. Industries");
+  brand.style.cssText = "display:flex;align-items:center;gap:12px;color:#f4f4f2";
+  brand.append(makeAppleLogo());
+  const copy = document.createElement("span");
+  copy.style.cssText = "display:flex;flex-direction:column;line-height:1.04;letter-spacing:.09em";
+  const name = document.createElement("strong");
+  name.textContent = "Apple Inc.";
+  name.style.cssText = "font-size:17px;font-weight:800;letter-spacing:.01em;color:#fff";
+  const industry = document.createElement("small");
+  industry.textContent = "INDUSTRIES";
+  industry.style.cssText = "font-size:10px;font-weight:700;letter-spacing:.28em;color:#d0d9d5";
+  copy.append(name, industry);
+  brand.append(copy);
+  return brand;
+}
 function rebrandPage() {
   if (!document.body) return;
-  if (document.title) {
-    const title = rebrandText(document.title);
-    if (title !== document.title) document.title = title;
-  }
+  const title = rebrandText(document.title);
+  if (title !== document.title) document.title = title;
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   let node;
   while ((node = walker.nextNode())) {
@@ -107,11 +143,11 @@ function rebrandPage() {
     }
   });
 
-  // The login hero has a separate embedded Tropica logo, not the .login-logo.
-  const loginBrand = document.querySelector(".art-top > span");
-  if (loginBrand && loginBrand.textContent !== "Apple Inc.") loginBrand.textContent = "Apple Inc.";
-  const leaf = document.querySelector(".art-top img");
-  if (leaf) leaf.remove();
+  // Replace the former leaf-and-text lockup with an Apple mark and wordmark.
+  const loginHeader = document.querySelector(".art-top");
+  if (loginHeader && !loginHeader.querySelector(".apple-login-brand")) {
+    loginHeader.replaceChildren(makeLoginBrand());
+  }
 
   const greetingName = document.querySelector("#welcomeName");
   if (greetingName && greetingName.textContent !== "Abhishek") greetingName.textContent = "Abhishek";
