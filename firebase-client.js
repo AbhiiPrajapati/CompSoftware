@@ -4,7 +4,7 @@
 
 const DATA_KEY = "tropica.local-data.v1";
 const SESSION_KEY = "tropica.local-admin-session";
-const ADMIN_EMAIL = "admin@tropica";
+const ADMIN_EMAIL = "abhishek@apple";
 const ADMIN_PASSWORD = "12345";
 const ADMIN_UID = "local-admin";
 
@@ -142,13 +142,8 @@ function rebrandPage() {
       if (updated !== original) element.setAttribute(attribute, updated);
     }
   });
-
-  // Replace the former leaf-and-text lockup with an Apple mark and wordmark.
   const loginHeader = document.querySelector(".art-top");
-  if (loginHeader && !loginHeader.querySelector(".apple-login-brand")) {
-    loginHeader.replaceChildren(makeLoginBrand());
-  }
-
+  if (loginHeader && !loginHeader.querySelector(".apple-login-brand")) loginHeader.replaceChildren(makeLoginBrand());
   const greetingName = document.querySelector("#welcomeName");
   if (greetingName && greetingName.textContent !== "Abhishek") greetingName.textContent = "Abhishek";
   const greetingMark = document.querySelector("#overviewPage .wave");
@@ -157,7 +152,6 @@ function rebrandPage() {
     if (greetingMark.style.color !== "rgb(0, 0, 0)") greetingMark.style.color = "#000";
     if (greetingMark.style.fontStyle !== "normal") greetingMark.style.fontStyle = "normal";
   }
-
   document.querySelectorAll("img.login-logo, .brand img, .employee-brand img").forEach(image => {
     const wordmark = document.createElement("span");
     wordmark.className = `${image.className} apple-wordmark`;
@@ -168,7 +162,6 @@ function rebrandPage() {
     image.replaceWith(wordmark);
   });
 }
-
 if (localStorage.getItem(SESSION_KEY) === "1") currentUser = makeAdminUser();
 window.tropicaFirebase = { auth, ready: Promise.resolve(null), signIn, signOut, onAuthStateChanged, loadProfile, subscribeState, saveState, saveAdminProfile };
 function startBrandObserver() {
