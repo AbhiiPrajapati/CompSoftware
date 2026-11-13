@@ -4,7 +4,7 @@
 
 const DATA_KEY = "company-name.local-data.v1";
 const SESSION_KEY = "company-name.local-admin-session";
-const ADMIN_EMAIL = "abhishek@apple.com";
+const ADMIN_EMAIL = "abhishek@company.com";
 const ADMIN_PASSWORD = "12345";
 const ADMIN_UID = "local-admin";
 
