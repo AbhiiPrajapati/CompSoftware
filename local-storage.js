@@ -26,9 +26,9 @@ const DEMO_STATE = {
     { id: "2026-11_demo-3", month: "2026-11", salespersonId: "demo-3", salespersonName: "Jordan Lee", amount: 5500000 },
     { id: "2026-11_demo-4", month: "2026-11", salespersonId: "demo-4", salespersonName: "Casey Patel", amount: 5000000 },
     { id: "2026-11_demo-5", month: "2026-11", salespersonId: "demo-5", salespersonName: "Riley Kim", amount: 4800000 },
-    { id: "2026-11_demo-6", month: "2026-11", salespersonId: "demo-6", salespersonName: "Morgan Blake", amount: 4500000 },
-    { id: "2026-11_demo-7", month: "2026-11", salespersonId: "demo-7", salespersonName: "Jamie Chen", amount: 4000000 },
-    { id: "2026-11_demo-8", month: "2026-11", salespersonId: "demo-8", salespersonName: "Drew Wilson", amount: 3520000 }
+    { id: "2026-11_demo-6", month: "2026-11", salespersonId: "demo-6", amount: 4500000 },
+    { id: "2026-11_demo-7", month: "2026-11", salespersonId: "demo-7", amount: 4000000 },
+    { id: "2026-11_demo-8", month: "2026-11", salespersonId: "demo-8", amount: 3520000 }
   ],
   teamTarget: 245000000,
   teamTargets: { "2026-11": 245000000 },
@@ -76,8 +76,25 @@ function writeState(state) {
 function makeAdminUser() {
   return { uid: ADMIN_UID, email: ADMIN_EMAIL, getIdTokenResult: async () => ({ authTime: new Date().toISOString() }) };
 }
+function showLocalAdminDashboard() {
+  const login = document.getElementById("loginView");
+  const app = document.getElementById("appView");
+  if (!login || !app) return;
+  login.classList.add("hidden");
+  app.classList.remove("hidden", "employee-mode");
+  document.getElementById("authLoading")?.classList.add("hidden");
+  document.documentElement.classList.remove("auth-pending");
+  document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+  document.getElementById("overviewPage")?.classList.add("active");
+  document.getElementById("adminNav")?.classList.remove("hidden");
+  document.getElementById("employeeNav")?.classList.add("hidden");
+  const name = document.getElementById("userName");
+  if (name) name.textContent = "Abhishek";
+  const role = document.getElementById("userRole");
+  if (role) role.textContent = "Administrator";
+}
 let currentUser = null;
-let adminProfile = { role: "admin", active: true, displayName: "Jaykishan Tolani", photo: "" };
+let adminProfile = { role: "admin", active: true, displayName: "Abhishek", photo: "" };
 const authListeners = new Set();
 const stateListeners = new Set();
 function notifyAuth() { for (const listener of authListeners) queueMicrotask(() => listener(currentUser)); }
@@ -90,6 +107,7 @@ async function signIn(email, password) {
   currentUser = makeAdminUser();
   try { localStorage.setItem(SESSION_KEY, "1"); } catch (error) { console.warn("Could not remember this sign-in.", error); }
   notifyAuth();
+  showLocalAdminDashboard();
   return { user: currentUser };
 }
 async function signOut() {
@@ -121,6 +139,10 @@ async function saveAdminProfile(profile) {
   adminProfile = { ...adminProfile, displayName: profile.name, photo: profile.photo || "" };
 }
 
-if (localStorage.getItem(SESSION_KEY) === "1") currentUser = makeAdminUser();
-// app.js uses this adapter interface; every operation above is local-only.
+if (localStorage.getItem(SESSION_KEY) === "1") {
+  currentUser = makeAdminUser();
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", showLocalAdminDashboard, { once: true });
+  else showLocalAdminDashboard();
+}
+// app.js uses this adapter interface; all authentication and data are local-only.
 window.tropicaFirebase = { auth, ready: Promise.resolve(null), signIn, signOut, onAuthStateChanged, loadProfile, subscribeState, saveState, saveAdminProfile };
