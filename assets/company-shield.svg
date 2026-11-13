@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Company Name Shield Logo</title>
+  <desc id="desc">Ornate silver shield with crown motif and decorative metal filigree.</desc>
+  <defs>
+    <linearGradient id="silver" x1="0" x2="1">
+      <stop offset="0%" stop-color="#f7f9fb"/>
+      <stop offset="12%" stop-color="#dfe5ea"/>
+      <stop offset="28%" stop-color="#9aa5af"/>
+      <stop offset="45%" stop-color="#f0f4f7"/>
+      <stop offset="62%" stop-color="#86939d"/>
+      <stop offset="78%" stop-color="#edf1f5"/>
+      <stop offset="100%" stop-color="#7e8a94"/>
+    </linearGradient>
+    <linearGradient id="silverDark" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#fdfefe"/>
+      <stop offset="30%" stop-color="#d0d7df"/>
+      <stop offset="60%" stop-color="#7f8d99"/>
+      <stop offset="100%" stop-color="#edf2f6"/>
+    </linearGradient>
+    <linearGradient id="metalEdge" x1="0" x2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="18%" stop-color="#b9c0c8"/>
+      <stop offset="50%" stop-color="#eef3f7"/>
+      <stop offset="84%" stop-color="#8894a0"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="15" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+    <filter id="shine" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.7 0"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <g transform="translate(600 600)">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M0 -495 L170 -470 C220 -455, 260 -425, 295 -375 L337 -307 C372 -255, 426 -215, 480 -170 C550 -109, 598 -50, 612 18 C628 95, 607 176, 563 246 C514 325, 462 385, 431 460 C397 542, 334 603, 240 635 C165 660, 82 670, 0 670 C-82 670, -165 660, -240 635 C-334 603, -397 542, -431 460 C-462 385, -514 325, -563 246 C-607 176, -628 95, -612 18 C-598 -50, -550 -109, -480 -170 C-426 -215, -372 -255, -337 -307 L-295 -375 C-260 -425, -220 -455, -170 -470 Z" fill="url(#silver)" stroke="url(#metalEdge)" stroke-width="18"/>
+        <path d="M0 -453 L146 -435 C178 -429, 208 -412, 232 -385 L271 -338 C304 -297, 347 -263, 390 -233 C459 -186, 507 -136, 522 -72 C538 -4, 523 72, 483 136 C447 192, 403 242, 363 309 C320 383, 268 438, 191 478 C124 512, 66 524, 0 524 C-66 524, -124 512, -191 478 C-268 438, -320 383, -363 309 C-403 242, -447 192, -483 136 C-523 72, -538 -4, -522 -72 C-507 -136, -459 -186, -390 -233 C-347 -263, -304 -297, -271 -338 L-232 -385 C-208 -412, -178 -429, -146 -435 Z" fill="url(#silverDark)" opacity="0.92" stroke="#d0d7dd" stroke-width="7"/>
+      </g>
+
+      <g fill="none" stroke="#e7edf3" stroke-width="7" stroke-linecap="round">
+        <path d="M-280 -380 C-205 -430, -134 -449, -70 -443 C-15 -438, 36 -411, 81 -366 C73 -306, 50 -264, 12 -232 C-31 -195, -96 -159, -136 -94 C-160 -58, -170 -17, -167 27 C-165 79, -135 125, -83 162" opacity="0.8"/>
+        <path d="M280 -380 C205 -430, 134 -449, 70 -443 C15 -438, -36 -411, -81 -366 C-73 -306, -50 -264, -12 -232 C31 -195, 96 -159, 136 -94 C160 -58, 170 -17, 167 27 C165 79, 135 125, 83 162" opacity="0.8"/>
+        <path d="M-90 182 C-47 140, 5 120, 52 132 C95 144, 128 187, 144 221 C170 278, 165 344, 128 395 C77 458, 12 470, -58 449 C-129 426, -179 381, -205 318" opacity="0.75"/>
+        <path d="M90 182 C47 140, -5 120, -52 132 C-95 144, -128 187, -144 221 C-170 278, -165 344, -128 395 C-77 458, -12 470, 58 449 C129 426, 179 381, 205 318" opacity="0.75"/>
+      </g>
+
+      <g opacity="0.95">
+        <g fill="#dfe7ee" stroke="#c0cbd5" stroke-width="4">
+          <circle cx="-230" cy="-290" r="12"/>
+          <circle cx="-175" cy="-210" r="10"/>
+          <circle cx="-123" cy="-137" r="10"/>
+          <circle cx="-74" cy="-92" r="9"/>
+          <circle cx="0" cy="-67" r="12"/>
+          <circle cx="74" cy="-92" r="9"/>
+          <circle cx="123" cy="-137" r="10"/>
+          <circle cx="175" cy="-210" r="10"/>
+          <circle cx="230" cy="-290" r="12"/>
+        </g>
+        <g fill="#dfe7ee" stroke="#c0cbd5" stroke-width="4">
+          <circle cx="-350" cy="-95" r="11"/>
+          <circle cx="-300" cy="-50" r="9"/>
+          <circle cx="-246" cy="-12" r="9"/>
+          <circle cx="-198" cy="25" r="8"/>
+          <circle cx="190" cy="25" r="8"/>
+          <circle cx="246" cy="-12" r="9"/>
+          <circle cx="300" cy="-50" r="9"/>
+          <circle cx="350" cy="-95" r="11"/>
+        </g>
+      </g>
+
+      <g transform="translate(0 -380)">
+        <path d="M-185 0 L-120 -120 L-40 -130 L0 -220 L40 -130 L120 -120 L185 0 L150 104 L84 140 L0 198 L-84 140 L-150 104 Z" fill="url(#silver)" stroke="url(#metalEdge)" stroke-width="18"/>
+        <path d="M-62 -40 L0 -115 L62 -40 L42 55 L0 104 L-42 55 Z" fill="rgba(255,255,255,0.16)" stroke="#eaf1f7" stroke-width="4"/>
+        <circle cx="0" cy="-20" r="24" fill="#d9e0e8" stroke="#c0cbd5" stroke-width="4"/>
+        <circle cx="0" cy="-20" r="11" fill="#f7fafc"/>
+        <circle cx="-80" cy="40" r="12" fill="#dfe7ee" stroke="#c4ced7" stroke-width="4"/>
+        <circle cx="80" cy="40" r="12" fill="#dfe7ee" stroke="#c4ced7" stroke-width="4"/>
+        <path d="M-22 -100 C-18 -78, -28 -60, -50 -57 C-60 -55, -71 -60, -81 -74 C-86 -81, -91 -90, -90 -100 C-84 -132, -60 -142, -32 -137 C-18 -134, -9 -122, -22 -100 Z" fill="#dfe7ee" opacity="0.85"/>
+        <path d="M22 -100 C18 -78, 28 -60, 50 -57 C60 -55, 71 -60, 81 -74 C86 -81, 91 -90, 90 -100 C84 -132, 60 -142, 32 -137 C18 -134, 9 -122, 22 -100 Z" fill="#dfe7ee" opacity="0.85"/>
+      </g>
+
+      <g fill="none" stroke="#e8edf2" stroke-width="5" opacity="0.9">
+        <path d="M-170 135 C-255 100, -330 106, -430 146 C-492 179, -535 234, -550 292 C-526 292, -472 264, -410 264 C-335 264, -262 294, -170 255"/>
+        <path d="M170 135 C255 100, 330 106, 430 146 C492 179, 535 234, 550 292 C526 292, 472 264, 410 264 C335 264, 262 294, 170 255"/>
+        <path d="M-95 355 C-145 308, -195 277, -250 265 C-318 250, -389 260, -430 305 C-390 344, -344 376, -271 395 C-214 410, -147 402, -95 355 Z"/>
+        <path d="M95 355 C145 308, 195 277, 250 265 C318 250, 389 260, 430 305 C390 344, 344 376, 271 395 C214 410, 147 402, 95 355 Z"/>
+      </g>
+
+      <g fill="url(#silver)" stroke="#f4f7fa" stroke-width="6" opacity="0.96">
+        <path d="M-485 -140 C-460 -190, -420 -220, -359 -233 C-310 -245, -280 -226, -280 -182 C-280 -122, -319 -85, -360 -75 C-413 -64, -456 -91, -485 -140 Z"/>
+        <path d="M485 -140 C460 -190, 420 -220, 359 -233 C310 -245, 280 -226, 280 -182 C280 -122, 319 -85, 360 -75 C413 -64, 456 -91, 485 -140 Z"/>
+      </g>
+
+      <g fill="url(#silver)" stroke="#eef4fa" stroke-width="5" filter="url(#shine)">
+        <path d="M-310 238 C-255 205, -208 184, -160 192 C-120 198, -96 212, -87 230 C-105 263, -141 287, -188 294 C-233 301, -269 280, -310 238 Z" opacity="0.7"/>
+        <path d="M310 238 C255 205, 208 184, 160 192 C120 198, 96 212, 87 230 C105 263, 141 287, 188 294 C233 301, 269 280, 310 238 Z" opacity="0.7"/>
+      </g>
+    </g>
+  </g>
+</svg>
