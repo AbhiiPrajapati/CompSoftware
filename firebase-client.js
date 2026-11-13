@@ -28,7 +28,7 @@ const DEMO_STATE = {
     { id: "2026-11_demo-3", month: "2026-11", salespersonId: "demo-3", salespersonName: "Jordan Lee", amount: 5500000 },
     { id: "2026-11_demo-4", month: "2026-11", salespersonId: "demo-4", salespersonName: "Casey Patel", amount: 5000000 },
     { id: "2026-11_demo-5", month: "2026-11", salespersonId: "demo-5", salespersonName: "Riley Kim", amount: 4800000 },
-    { id: "2026-11_demo-6", month: "2026-11", salespersonId: "demo-6", salespersonName: "Morgan Blake", amount: 4500000 },
+    { id: "2026-11_demo-6", month: "2026-11", salespersonId: "demo-6", amount: 4500000 },
     { id: "2026-11_demo-7", month: "2026-11", salespersonId: "demo-7", salespersonName: "Jamie Chen", amount: 4000000 },
     { id: "2026-11_demo-8", month: "2026-11", salespersonId: "demo-8", salespersonName: "Drew Wilson", amount: 3520000 }
   ],
@@ -125,97 +125,8 @@ async function saveAdminProfile(profile) {
   adminProfile = { ...adminProfile, displayName: profile.name, photo: profile.photo || "" };
 }
 
-function rebrandText(value) {
-  return value.replace(/Tropica\s+Industries/gi, "Apple Inc.")
-    .replace(/Tropica/gi, "Apple Inc.")
-    .replace(/FCFA/g, "AUD")
-    .replace(/₣/g, "A$");
-}
-function makeAppleLogo() {
-  const ns = "http://www.w3.org/2000/svg";
-  const svg = document.createElementNS(ns, "svg");
-  svg.setAttribute("viewBox", "0 0 64 64");
-  svg.setAttribute("aria-hidden", "true");
-  svg.setAttribute("class", "apple-login-mark");
-  svg.style.cssText = "width:38px;height:38px;flex:none;filter:drop-shadow(0 1px 2px #001c16)";
-  const body = document.createElementNS(ns, "path");
-  body.setAttribute("fill", "#f4f4f2");
-  body.setAttribute("stroke", "#b8c2be");
-  body.setAttribute("stroke-width", "1.5");
-  body.setAttribute("d", "M32 22c-6-6-17-7-23 1-8 11 1 32 10 37 5 3 9-1 13-1s8 4 13 1c9-5 18-26 10-37-6-8-17-7-23-1z");
-  const leaf = document.createElementNS(ns, "path");
-  leaf.setAttribute("fill", "#f4f4f2");
-  leaf.setAttribute("stroke", "#b8c2be");
-  leaf.setAttribute("stroke-width", "1.5");
-  leaf.setAttribute("d", "M33 16C33 7 40 3 49 4c-1 8-7 13-16 13z");
-  svg.append(body, leaf);
-  return svg;
-}
-function makeLoginBrand() {
-  const brand = document.createElement("div");
-  brand.className = "apple-login-brand";
-  brand.setAttribute("role", "img");
-  brand.setAttribute("aria-label", "Apple Inc. Industries");
-  brand.style.cssText = "display:flex;align-items:center;gap:12px;color:#f4f4f2";
-  brand.append(makeAppleLogo());
-  const copy = document.createElement("span");
-  copy.style.cssText = "display:flex;flex-direction:column;line-height:1.04;letter-spacing:.09em";
-  const name = document.createElement("strong");
-  name.textContent = "Apple Inc.";
-  name.style.cssText = "font-size:17px;font-weight:800;letter-spacing:.01em;color:#fff";
-  const industry = document.createElement("small");
-  industry.textContent = "INDUSTRIES";
-  industry.style.cssText = "font-size:10px;font-weight:700;letter-spacing:.28em;color:#d0d9d5";
-  copy.append(name, industry);
-  brand.append(copy);
-  return brand;
-}
-function rebrandPage() {
-  if (!document.body) return;
-  const title = rebrandText(document.title);
-  if (title !== document.title) document.title = title;
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-  let node;
-  while ((node = walker.nextNode())) {
-    const updated = rebrandText(node.nodeValue);
-    if (updated !== node.nodeValue) node.nodeValue = updated;
-  }
-  document.querySelectorAll("[aria-label], [alt], [placeholder], [title]").forEach(element => {
-    for (const attribute of ["aria-label", "alt", "placeholder", "title"]) {
-      if (!element.hasAttribute(attribute)) continue;
-      const original = element.getAttribute(attribute);
-      const updated = rebrandText(original);
-      if (updated !== original) element.setAttribute(attribute, updated);
-    }
-  });
-  const loginHeader = document.querySelector(".art-top");
-  if (loginHeader && !loginHeader.querySelector(".apple-login-brand")) loginHeader.replaceChildren(makeLoginBrand());
-  const greetingName = document.querySelector("#welcomeName");
-  if (greetingName && greetingName.textContent !== "Abhishek") greetingName.textContent = "Abhishek";
-  const greetingMark = document.querySelector("#overviewPage .wave");
-  if (greetingMark) {
-    if (greetingMark.textContent !== "!") greetingMark.textContent = "!";
-    if (greetingMark.style.color !== "rgb(0, 0, 0)") greetingMark.style.color = "#000";
-    if (greetingMark.style.fontStyle !== "normal") greetingMark.style.fontStyle = "normal";
-  }
-  document.querySelectorAll("img.login-logo, .brand img, .employee-brand img").forEach(image => {
-    const wordmark = document.createElement("span");
-    wordmark.className = `${image.className} apple-wordmark`;
-    wordmark.textContent = "Apple Inc.";
-    wordmark.setAttribute("role", "img");
-    wordmark.setAttribute("aria-label", "Apple Inc.");
-    wordmark.style.cssText = "display:inline-flex;align-items:center;justify-content:center;object-fit:contain;font-weight:800;font-size:1.15rem;letter-spacing:.02em;color:inherit;min-width:100px;min-height:36px";
-    image.replaceWith(wordmark);
-  });
-}
+// Do not rewrite the page's brand or replace its logo at runtime. Branding and
+// logo assets are defined directly in index.html so the sign-in page and app
+// remain consistent with the Company Name theme.
 if (localStorage.getItem(SESSION_KEY) === "1") currentUser = makeAdminUser();
 window.tropicaFirebase = { auth, ready: Promise.resolve(null), signIn, signOut, onAuthStateChanged, loadProfile, subscribeState, saveState, saveAdminProfile };
-function startBrandObserver() {
-  rebrandPage();
-  new MutationObserver(rebrandPage).observe(document.body, {
-    subtree: true, childList: true, characterData: true, attributes: true,
-    attributeFilter: ["aria-label", "alt", "placeholder", "title"]
-  });
-}
-if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", startBrandObserver, { once: true });
-else startBrandObserver();
